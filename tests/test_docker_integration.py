@@ -64,6 +64,7 @@ def docker_lab():
 class TestDockerIntegration:
     """Integration tests using Docker containers."""
 
+    @pytest.mark.docker
     def test_nginx_port_open(self, docker_lab):
         """Test that Nginx port 8080 is detected as open."""
         from nobu.scanner import PortScanner, ScanConfig
@@ -80,6 +81,7 @@ class TestDockerIntegration:
         assert results[0].port == 8080
         assert results[0].state == "open"
 
+    @pytest.mark.docker
     def test_mysql_port_open(self, docker_lab):
         """Test that MySQL port 3306 is detected as open."""
         from nobu.scanner import PortScanner, ScanConfig
@@ -96,6 +98,7 @@ class TestDockerIntegration:
         assert results[0].port == 3306
         assert results[0].state == "open"
 
+    @pytest.mark.docker
     def test_redis_port_open(self, docker_lab):
         """Test that Redis port 6379 is detected as open."""
         from nobu.scanner import PortScanner, ScanConfig
@@ -112,6 +115,7 @@ class TestDockerIntegration:
         assert results[0].port == 6379
         assert results[0].state == "open"
 
+    @pytest.mark.docker
     def test_lab_profile_all_ports(self, docker_lab):
         """Test scanning all lab ports."""
         from nobu.scanner import PortScanner, ScanConfig
@@ -136,6 +140,7 @@ class TestDockerIntegration:
         # At least 8 ports should be open (some may fail on different systems)
         assert len(open_ports) >= 8, f"Only {len(open_ports)} ports open"
 
+    @pytest.mark.docker
     def test_banner_grabbing(self, docker_lab):
         """Test banner grabbing on HTTP port."""
         from nobu.scanner import PortScanner, ScanConfig
@@ -154,6 +159,7 @@ class TestDockerIntegration:
         # Banner should contain HTTP or nginx
         assert "HTTP" in results[0].banner or "nginx" in results[0].banner.lower()
 
+    @pytest.mark.docker
     def test_ssh_banner(self, docker_lab):
         """Test SSH banner detection."""
         from nobu.scanner import PortScanner, ScanConfig
@@ -172,6 +178,7 @@ class TestDockerIntegration:
         # SSH banner should contain SSH version
         assert "SSH" in results[0].banner
 
+    @pytest.mark.docker
     def test_json_export(self, docker_lab, tmp_path):
         """Test JSON export functionality."""
         from nobu.output import ScanResult, create_json_output
@@ -198,6 +205,7 @@ class TestDockerIntegration:
 
         assert loaded["target"] == "127.0.0.1"
 
+    @pytest.mark.docker
     def test_closed_port_detection(self, docker_lab):
         """Test that closed ports are properly detected."""
         from nobu.scanner import PortScanner, ScanConfig
@@ -215,6 +223,7 @@ class TestDockerIntegration:
         assert results[0].port == 9999
         assert results[0].state in ("closed", "filtered")
 
+    @pytest.mark.docker
     def test_scan_stats(self, docker_lab):
         """Test scan statistics collection."""
         from nobu.scanner import PortScanner, ScanConfig
@@ -235,6 +244,7 @@ class TestDockerIntegration:
 class TestCLIWithDocker:
     """CLI integration tests with Docker."""
 
+    @pytest.mark.docker
     def test_cli_scan_command(self, docker_lab):
         """Test CLI scan command."""
         from nobu.cli import main
@@ -246,6 +256,7 @@ class TestCLIWithDocker:
 
         assert exit_code == 0
 
+    @pytest.mark.docker
     def test_cli_profile_command(self, docker_lab):
         """Test CLI profile command."""
         from nobu.cli import main
@@ -254,6 +265,7 @@ class TestCLIWithDocker:
 
         assert exit_code == 0
 
+    @pytest.mark.docker
     def test_cli_json_output(self, docker_lab, tmp_path):
         """Test CLI JSON output."""
         from nobu.cli import main
