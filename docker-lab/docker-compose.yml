@@ -1,0 +1,145 @@
+# Nobu Test Lab - Docker Compose Environment
+# This creates a safe, isolated network for testing the port scanner
+#
+# Usage:
+#   docker-compose up -d      # Start all services
+#   docker-compose down       # Stop all services
+#   docker-compose logs       # View logs
+#
+# Then scan with:
+#   nobu scan --target 127.0.0.1 --ports 8080,8443,2222,3306,5432,6379,27017
+
+services:
+  # NOTE: All passwords in this file are intentional test credentials
+  # for the isolated Docker lab environment. Never use in production.
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # WEB SERVERS
+  # ═══════════════════════════════════════════════════════════════════════════
+  
+  nginx:
+    image: nginx:alpine
+    container_name: nobu-nginx
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ./nginx/index.html:/usr/share/nginx/html/index.html:ro
+    restart: unless-stopped
+    networks:
+      - nobu-lab
+
+  apache:
+    image: httpd:alpine
+    container_name: nobu-apache
+    ports:
+      - "8081:80"
+    restart: unless-stopped
+    networks:
+      - nobu-lab
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # SSH SERVER
+  # ═══════════════════════════════════════════════════════════════════════════
+  
+  ssh:
+    image: linuxserver/openssh-server:latest
+    container_name: nobu-ssh
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - PASSWORD_ACCESS=true
+      - USER_PASSWORD=nobutest
+      - USER_NAME=scanner
+    ports:
+      - "2222:2222"
+    restart: unless-stopped
+    networks:
+      - nobu-lab
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # DATABASES
+  # ═══════════════════════════════════════════════════════════════════════════
+  
+  mysql:
+    image: mysql:8.0
+    container_name: nobu-mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=nobutest
+      - MYSQL_DATABASE=testdb
+    ports:
+      - "3306:3306"
+    restart: unless-stopped
+    networks:
+      - nobu-lab
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: nobu-postgres
+    environment:
+      - POSTGRES_PASSWORD=nobutest
+      - POSTGRES_DB=testdb
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - nobu-lab
+
+  redis:
+    image: redis:alpine
+    container_name: nobu-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - nobu-lab
+
+  mongodb:
+    image: mongo:6
+    container_name: nobu-mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=nobutest
+    ports:
+      - "27017:27017"
+    restart: unless-stopped
+    networks:
+      - nobu-lab
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # MAIL SERVER (SMTP simulation)
+  # ═══════════════════════════════════════════════════════════════════════════
+  
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: nobu-mailhog
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+    restart: unless-stopped
+    networks:
+      - nobu-lab
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # FTP SERVER
+  # ═══════════════════════════════════════════════════════════════════════════
+  
+  ftp:
+    image: fauria/vsftpd
+    container_name: nobu-ftp
+    environment:
+      - FTP_USER=scanner
+      - FTP_PASS=nobutest
+      - PASV_ADDRESS=127.0.0.1
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    restart: unless-stopped
+    networks:
+      - nobu-lab
+
+networks:
+  nobu-lab:
+    driver: bridge
+    name: nobu-test-network
+

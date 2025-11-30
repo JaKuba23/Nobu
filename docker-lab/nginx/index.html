@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nobu Test Server</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #eee;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .banner {
+            color: #ff6b6b;
+            font-size: 12px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            white-space: pre;
+        }
+        h1 { color: #4ecdc4; margin-bottom: 10px; }
+        p { color: #95a5a6; margin-bottom: 20px; }
+        .status {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #27ae60;
+            border-radius: 20px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .info { margin-top: 30px; font-size: 12px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <pre class="banner">
+ ███╗   ██╗ ██████╗ ██████╗ ██╗   ██╗
+ ████╗  ██║██╔═══██╗██╔══██╗██║   ██║
+ ██╔██╗ ██║██║   ██║██████╔╝██║   ██║
+ ██║╚██╗██║██║   ██║██╔══██╗██║   ██║
+ ██║ ╚████║╚██████╔╝██████╔╝╚██████╔╝
+ ╚═╝  ╚═══╝ ╚═════╝ ╚═════╝  ╚═════╝
+        </pre>
+        <h1>Test Lab Server</h1>
+        <p>This is a test environment for Nobu port scanner</p>
+        <div class="status">● ONLINE</div>
+        <div class="info">
+            Port 8080 (HTTP) | Nginx Alpine<br>
+            Safe for scanning - designed for testing
+        </div>
+    </div>
+</body>
+</html>
+
