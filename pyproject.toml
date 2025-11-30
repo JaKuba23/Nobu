@@ -77,6 +77,9 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+markers = [
+    "docker: marks tests that require Docker to be running (deselect with '-m \"not docker\"')"
+]
 
 [tool.mypy]
 python_version = "3.10"
